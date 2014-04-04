@@ -4,7 +4,7 @@
 	<meta charset="UTF-8" />
 	<title>Phaser - Making your first game, part 1</title>
 	<script type="text/javascript" src= "js/phaser.min.js"></script>
-    <!---<script type="text/javascript" src= "GruntCode.js"></script>-->
+    <script type="text/javascript" src= "GruntCode.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -15,15 +15,6 @@
 <script type="text/javascript">
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-var walkRight = function () {
-    enemy.body.velocity = 150;
-    enemy.animations.play();
-};
-
-var walkLeft = function () {
-    enemy.body.velocity = -150;
-    enemy.animations.play();
-};
 var left = false;
 var right = false;
 var firing = false;
@@ -54,16 +45,20 @@ var pistolFire = function () {
             gun.frame = 1; 
            var bullet = bullets.create(gun.x + 80, gun.y, 'bullet');
             bullet.body.velocity.x = 300; 
+            bullet.frame = 0;
        } else if (player.body.velocity.x === -150) {
             gun.frame = 3;
             var bullet = bullets.create(gun.x - 10, gun.y, 'bullet');
             bullet.body.velocity.x = -300; 
+            bullet.frame = 1;
        } else {
            gun.frame = 5;
            var bullet = bullets.create(gun.x - 8, gun.y + 5, 'bullet');
            bullet.body.velocity.x = -300; 
+            bullet.frame = 1;
            var bullet = bullets.create(gun.x + 78, gun.y + 5, 'bullet');
            bullet.body.velocity.x = 300; 
+            bullet.frame = 0;
         } 
     }
     bulletCounter++;
@@ -203,12 +198,14 @@ function update() {
     pistolMatch();
 
     if (farLeft === true) {
-       enemy.body.velocity.x = 100;
-       enemy.animations.play('goRight');
+       // enemy.body.velocity.x = 100;
+       // enemy.animations.play('goRight');
+       walkRight (enemy);
     } 
     if (enemy.x > 300) {
-        farRight = true;
-        farLeft = false;
+        // farRight = true;
+        // farLeft = false;
+        walkLeft (enemy);
     }
 
     if(farRight === true) {
