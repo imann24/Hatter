@@ -198,21 +198,17 @@ function update() {
     pistolMatch();
 
     if (farLeft === true) {
-       // enemy.body.velocity.x = 100;
-       // enemy.animations.play('goRight');
-       walkRight (enemy);
+       walkRight(enemy);
     } 
-    if (enemy.x > 300) {
-        // farRight = true;
-        // farLeft = false;
-        walkLeft (enemy);
+    if (enemy.x >= 300) {
+        farRight = true;
+        farLeft = false;
     }
 
-    if(farRight === true) {
-    enemy.body.velocity.x = -100;
-       enemy.animations.play('goLeft');   
+    if(farRight === true) { 
+        walkLeft(enemy);
     } 
-    if (enemy.x < 100) {
+    if (enemy.x <= 100) {
         farLeft = true;
         farRight = false;
     }
