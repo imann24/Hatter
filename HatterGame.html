@@ -5,6 +5,11 @@
 	<title>Phaser - Making your first game, part 1</title>
 	<script type="text/javascript" src= "js/phaser.min.js"></script>
     <script type="text/javascript" src= "GruntCode.js"></script>
+    <script type="text/javascript" src= "PistolCode.js"></script>
+    <script type="text/javascript" src= "PlayerCode.js"></script>
+    <script type="text/javascript" src= "GUI.js"></script>
+    <script type="text/javascript" src= "PreloadCode.js"></script>
+    <script type="text/javascript" src= "CreateCode.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -13,149 +18,39 @@
 </head>
 <body>
 <script type="text/javascript">
+
+var enemyAlive = true;
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-var left = false;
-var right = false;
-var firing = false;
-var fireCounter = 0;
-var enemyHealthNum = 0;
-
-var healthMatch = function () {
-    health.x = enemy.x + 5;
-    health.y = enemy.y - 10;
-};
-
-var pistolMatch = function () {
-    if (firing === false) {
-        if (right) {
-            gun.frame = 0;      
-        } else if (left) {
-            gun.frame = 2;
-        }
-    }
-    gun.x = player.x - 24;
-    gun.y = player.y + 22;  
-};
-
-var pistolFire = function () {
-   if (bulletCounter === 1) {
-        firing = true;
-        if (player.body.velocity.x === 150) {
-            gun.frame = 1; 
-           var bullet = bullets.create(gun.x + 80, gun.y, 'bullet');
-            bullet.body.velocity.x = 300; 
-            bullet.frame = 0;
-       } else if (player.body.velocity.x === -150) {
-            gun.frame = 3;
-            var bullet = bullets.create(gun.x - 10, gun.y, 'bullet');
-            bullet.body.velocity.x = -300; 
-            bullet.frame = 1;
-       } else {
-           gun.frame = 5;
-           var bullet = bullets.create(gun.x - 8, gun.y + 5, 'bullet');
-           bullet.body.velocity.x = -300; 
-            bullet.frame = 1;
-           var bullet = bullets.create(gun.x + 78, gun.y + 5, 'bullet');
-           bullet.body.velocity.x = 300; 
-            bullet.frame = 0;
-        } 
-    }
-    bulletCounter++;
-    if (bulletCounter > 7){
-        bulletCounter = 0;
-    }
-};
-
 function preload() {
-	game.load.image('sky', 'assets/sky.png');
-    game.load.image('ground', 'assets/platform.png');
-    game.load.spritesheet('bullet', 'assets/bullet.png', 10, 3);
-    game.load.spritesheet('pistol', 'assets/pistol.png', 80, 16)
-    game.load.spritesheet('hatter', 'assets/Hatter.png', 32, 58);
-    game.load.spritesheet('grunt','assets/grunt.png', 32, 58);
-    game.load.spritesheet('health', 'assets/healthbar.png', 21, 4);
+    preloadSprites();
 }
 
 
 function create() {
-     //  A simple background for our game
-    game.add.sprite(0, 0, 'sky');
- 
-    //  The platforms group contains the ground and the 2 ledges we can jump on
-    platforms = game.add.group();
-
-    bullets = game.add.group();
- 
-    // Here we create the ground.
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
- 
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    ground.scale.setTo(2, 2);
- 
-    //  This stops it from falling away when you jump on it
-    ground.body.immovable = true;
- 
-    //  Now let's create two ledges
-    var ledge = platforms.create(400, 400, 'ground');
-    ledge.body.immovable = true;
- 
-    var ledge = platforms.create(-150, 250, 'ground');
-    ledge.body.immovable = true;
-    
-    //adds player weapon
-    gun = game.add.sprite(19, game.world.height - 100, 'pistol')
-    
-    // The player and its settings
-    player = game.add.sprite(32, game.world.height - 120, 'hatter');
-    enemy = game.add.sprite(200, game.world.height - 120, 'grunt');
-    health = game.add.sprite (200, game.world.height - 120, 'health');
-
-    player.body.bounce.y = 0;
-    player.body.gravity.y = 10;
-    player.body.collideWorldBounds = true;
- 
-    //  Our two animations, walking left and right.
-    player.animations.add('left', [3, 4, 5], 6, true);
-    player.animations.add('right', [0, 1, 2], 6, true);
-
-    enemy.body.bounce.y = 0;
-    enemy.body.gravity.y = 10;
-    enemy.body.collideWorldBounds = true;
- 
-    //  Our two animations, walking left and right.
-    enemy.animations.add('goLeft', [4, 5, 6], 6, true);
-    enemy.animations.add('goRight', [0, 1, 2], 6, true);
-
-    fireKey = game.input.keyboard.addKey(Phaser.Keyboard.F);
-    cursors = game.input.keyboard.createCursorKeys();
-    pistolMatch();
-
-}
-
-var bulletCounter = 0;
-var farRight = false;
-var farLeft = true;
-function killEnemy (enemy, bullet) {
-    bullet.kill();
-    enemyHealthNum ++;
-
+    createGameItems();
 }
 
 function update() {
-   healthMatch();
+    for (var i = 0; i < bulletItems.length; i++) {
+        bulletItems[i].animations.play('bounce');
+    }    
+   enemyHealthMatch();
+   checkPlayerDamage();
+   playerHealthMatch();
    if (enemyHealthNum < 7) {
         health.frame = enemyHealthNum;
     }   
-    if (gun.frame === 5 && fireCounter < 2 && firing === true) {
+    if (playerGun.frame === 5 && fireCounter < 2 && firing === true) {
         fireCounter++;
     } else {
-         gun.frame = 4;
+         playerGun.frame = 4;
          firing = false;
          fireCounter = 0;
     }
-   left = false;
-   right = false;
+   playerLeft = false;
+   playerRight = false;
 
     //  Collide the player and the stars with the platforms
     game.physics.collide(player, platforms);
@@ -168,15 +63,14 @@ function update() {
     if (cursors.left.isDown) {
         //  Move to the left
         player.body.velocity.x = -150;
- 
         player.animations.play('left');
-        left = true;
+        playerLeft = true;
     } else if (cursors.right.isDown) {
         //  Move to the right
         player.body.velocity.x = 150;
  
         player.animations.play('right');
-        right = true;
+        playerRight = true;
     } else {
         //  Stand still
         player.animations.stop();
@@ -192,32 +86,40 @@ function update() {
         player.body.velocity.y = 500;
     }
     if (fireKey.isDown) {
-        pistolFire();
+        pistolFire(player, playerGun, playerLeft, playerRight, ammoCount);
     }
-    //makes sure the pistol is displaying the proper frame 
-    pistolMatch();
+    //makes sure the pistols are displaying the proper frame 
+    pistolMatch(player, playerGun, playerLeft, playerRight);
+    pistolMatch(enemy, enemyGun, goingLeft, goingRight);
 
-    if (farLeft === true) {
+    if (goingRight === true) {
        walkRight(enemy);
     } 
-    if (enemy.x >= 300) {
-        farRight = true;
-        farLeft = false;
+    if (enemy.x >= 700) {
+        goingLeft = true;
+        goingRight = false;
     }
 
-    if(farRight === true) { 
+    if(goingLeft === true) { 
         walkLeft(enemy);
     } 
     if (enemy.x <= 100) {
-        farLeft = true;
-        farRight = false;
+        goingRight = true;
+        goingLeft = false;
     }
 
-    game.physics.overlap (enemy, bullets, killEnemy, null, this);
+    enemyAmmoReplenish();
+    game.physics.overlap (enemy, bullets, damageEnemy, null, this);
     if (enemyHealthNum === 7) {
-        enemy.kill();
-        health.kill();
+         killEnemy(enemy, enemyGun);
     }
+    //player.y === enemy.y && Math.abs(player.x - enemy.x) < 300
+    if (facingPlayer() && enemyAlive) {
+        pistolFire(enemy, enemyGun, goingLeft, goingRight, enemyAmmo);
+    }
+
+    checkBulletPickUp();   
+    updateBullets();
 }
 </script>
 </body>
