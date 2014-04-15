@@ -10,6 +10,7 @@
     <script type="text/javascript" src= "GUI.js"></script>
     <script type="text/javascript" src= "PreloadCode.js"></script>
     <script type="text/javascript" src= "CreateCode.js"></script>
+    <script type="text/javascript" src= "EnvironmentCode.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -20,7 +21,7 @@
 <script type="text/javascript">
 
 var enemyAlive = true;
-
+var enemy1;
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
@@ -35,13 +36,16 @@ function create() {
 function update() {
     for (var i = 0; i < bulletItems.length; i++) {
         bulletItems[i].animations.play('bounce');
-    }    
-   enemyHealthMatch();
-   checkPlayerDamage();
-   playerHealthMatch();
-   if (enemyHealthNum < 7) {
-        health.frame = enemyHealthNum;
-    }   
+    } 
+    
+    for (var i = 0; i < enemies.length; i++) {
+       // game.physics.overlap (enemies[i].sprite, bullets, enemies[i].damageEnemy, null, this);
+       enemies[i].checkEnemyDamage();
+    }
+    
+    game.physics.collide(player, platforms); 
+    enemiesUpdate();
+
     if (playerGun.frame === 5 && fireCounter < 2 && firing === true) {
         fireCounter++;
     } else {
@@ -49,32 +53,16 @@ function update() {
          firing = false;
          fireCounter = 0;
     }
-   playerLeft = false;
-   playerRight = false;
-
-    //  Collide the player and the stars with the platforms
-    game.physics.collide(player, platforms);
-    game.physics.collide(enemy, platforms);
- 
-  //  Reset the players velocity (movement)
-    player.body.velocity.x = 0;
    
+    resetPlayerMovement();
 
     if (cursors.left.isDown) {
-        //  Move to the left
-        player.body.velocity.x = -150;
-        player.animations.play('left');
-        playerLeft = true;
+        walkLeft();
     } else if (cursors.right.isDown) {
-        //  Move to the right
-        player.body.velocity.x = 150;
- 
-        player.animations.play('right');
-        playerRight = true;
+        walkRight();
+        
     } else {
-        //  Stand still
-        player.animations.stop();
-        player.frame = 6;
+        playerStop();
     }
  
     //  Allow the player to jump if they are touching the ground.
@@ -88,36 +76,19 @@ function update() {
     if (fireKey.isDown) {
         pistolFire(player, playerGun, playerLeft, playerRight, ammoCount);
     }
-    //makes sure the pistols are displaying the proper frame 
+
+    if (respawnKey.isDown) {
+        respawnPlayer();
+    }
+
+    checkPlayerDamage();
+    playerHealthMatch();
+    
     pistolMatch(player, playerGun, playerLeft, playerRight);
-    pistolMatch(enemy, enemyGun, goingLeft, goingRight);
-
-    if (goingRight === true) {
-       walkRight(enemy);
-    } 
-    if (enemy.x >= 700) {
-        goingLeft = true;
-        goingRight = false;
+    
+    if (playerHealthNum < 1) {
+        killPlayer();
     }
-
-    if(goingLeft === true) { 
-        walkLeft(enemy);
-    } 
-    if (enemy.x <= 100) {
-        goingRight = true;
-        goingLeft = false;
-    }
-
-    enemyAmmoReplenish();
-    game.physics.overlap (enemy, bullets, damageEnemy, null, this);
-    if (enemyHealthNum === 7) {
-         killEnemy(enemy, enemyGun);
-    }
-    //player.y === enemy.y && Math.abs(player.x - enemy.x) < 300
-    if (facingPlayer() && enemyAlive) {
-        pistolFire(enemy, enemyGun, goingLeft, goingRight, enemyAmmo);
-    }
-
     checkBulletPickUp();   
     updateBullets();
 }

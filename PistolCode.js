@@ -7,6 +7,8 @@ var bulletCounter = 0;
 var ammoCount = 8; 
 
 var bulletItems = [];
+var bulletXPos = [50, 400, 400, 600, 150, 600];
+var bulletYPos = [200, 500, 350, 350, 200, 500];
 
 var pistolFire = function (character, gun, left, right, ammo) {
    
@@ -36,8 +38,12 @@ var pistolFire = function (character, gun, left, right, ammo) {
         } 
         if (character === player) {
           ammoCount = ammo;
-        } else if (character === enemy) {
-          enemyAmmo = ammo;
+        } else {
+          for (var i = 0; i < enemies.length; i++){ 
+            if (character = enemies[i]){
+              enemies[i].ammo = ammo;
+            }
+          }
         }
     }
     bulletCounter++;

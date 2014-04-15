@@ -1,60 +1,99 @@
-var goingRight = false;
-var goingLeft = true;
-var enemyAmmoCounter = 0; 
-var enemyAmmo = 3; 
+var enemyReloadCounter = 0;
+var enemies = [];
+var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingLeft, reloadCounter) {
+    this.sprite = sprite;
+    this.gun = gun;
+    this.healthSprite = healthSprite;
+    this.health = health;
+    this.ammo = ammo;
+    this.goingRight = goingRight; 
+    this.goingLeft = goingLeft; 
+    this.reloadCounter = reloadCounter;
+};
 
-var enemyHealthNum = 0;
-
-var enemyAmmoReplenish = function () {
-	enemyAmmoCounter++; 
-	if (enemyAmmoCounter === 300) {
-		enemyAmmoCounter = 0;		
-		enemyAmmo += 3;
+Enemy.prototype.enemyAmmoReplenish = function () {
+	this.reloadCounter++; 
+	if (this.reloadCounter === 300) {
+		this.reloadCounter = 0;		
+		this.ammo += 3;
 	}
 };
 
-var walkRight = function (enemy) {
-	enemy.body.velocity.x = 150;
-	enemy.animations.play('goRight');
+Enemy.prototype.walkRight = function() {
+	this.sprite.body.velocity.x = 150;
+	this.sprite.animations.play('goRight');
 };
 
-var walkLeft = function (enemy) {
-	enemy.body.velocity.x = -150;
-	enemy.animations.play('goLeft');
+Enemy.prototype.walkLeft = function () {
+	this.sprite.body.velocity.x = -150;
+	this.sprite.animations.play('goLeft');
 };
 
-var damageEnemy = function (enemy, bullet) {
+Enemy.prototype.damageEnemy = function (enemy, bullet) {
+	this.health--;
 	bullet.kill();
-    enemyHealthNum ++;
 };
 
-var enemyHealthMatch = function () {
-    health.x = enemy.x + 5;
-    health.y = enemy.y - 10;
+Enemy.prototype.enemyHealthMatch = function() {
+	this.healthSprite.x = this.sprite.x + 5;
+    this.healthSprite.y = this.sprite.y - 10;
+    if (this.health > -1) {
+    	this.healthSprite.frame = 7 - this.health;   	
+	}
 };
 
-var attackPlayer = function () {	
-	enemy.body.velocity.x = 0;
-	enemy.frame = 3;
-}
-
-var killEnemy = function (character, gun) {
-	 enemy.kill();
-     health.kill();
-     enemyGun.kill();   
-     enemyAlive = false;
+Enemy.prototype.attackPlayer = function () {
+	this.sprite.body.velocity.x = 0;
+	this.sprite.frame = 3;
 };
 
-var facingPlayer = function () {
-	if ((goingRight && player.x > enemy.x) || (goingLeft && player.x < enemy.x)) {
+Enemy.prototype.killEnemy = function () {
+	this.sprite.kill();
+    this.healthSprite.kill();
+    this.gun.kill();   
+};
+
+Enemy.prototype.facingPlayer = function(enemy) {
+	if ((enemy.goingRight && player.x > enemy.sprite.x) || (enemy.goingLeft && player.x < enemy.sprite.x)) {
 		return true;
 	} else {
 		return false;
 	}
 };
 
-function damageEnemy (enemy, bullet) {
-    bullet.kill();
-    enemyHealthNum ++;
+
+Enemy.prototype.checkEnemyDamage = function () {
+	game.physics.overlap (this.sprite, bullets, this.damageEnemy, null, this);
 };
 
+enemiesUpdate = function() {
+	for (var i = 0; i < enemies.length; i++) {
+        enemies[i].enemyHealthMatch();
+        game.physics.collide(enemies[i].sprite, platforms);
+        pistolMatch(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight);
+        if (enemies[i].goingRight === true) {
+           enemies[i].walkRight();
+        } 
+        if (enemies[i].sprite.x >= 700) {
+            enemies[i].goingLeft = true;
+            enemies[i].goingRight = false;
+        }
+
+        if(enemies[i].goingLeft === true) { 
+            enemies[i].walkLeft();
+        } 
+        if (enemies[i].sprite.x <= 100) {
+            enemies[i].goingRight = true;
+            enemies[i].goingLeft = false;
+        }
+
+        enemies[i].enemyAmmoReplenish();
+        // game.physics.overlap (enemies[i].sprite, bullets, enemies[i].damageEnemy, null, this);
+        if (enemies[i].health === 0) {
+             enemies[i].killEnemy();
+        }
+        if (enemies[i].facingPlayer(enemies[i])) {
+            pistolFire(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight, enemies[i].ammo);
+        }
+    }   
+};

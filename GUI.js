@@ -1,4 +1,6 @@
 var guiY = 10; 
 var updateBullets = function () {
-	playerAmmo.frame = ammoCount;
+	if (ammoCount < 9 && ammoCount > -1) {
+		playerAmmo.frame = ammoCount;
+	}
 }
