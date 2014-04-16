@@ -1,6 +1,8 @@
 var createGameItems = function () {
-	var enemyXPos = [200, 400];
-    var enemyYPos = [game.world.height-120, game.world.height-320];
+	var enemyXPos = [200, 400, 100];
+    var enemyYPos = [game.world.height-120, game.world.height-260, game.world.height-410];
+    var enemyFarLeft = [100, 500, 25];
+    var enemyFarRight = [700, 700, 200];
     var enemyGun = [];
     var grunt = [];
     var enemyHealth = [];
@@ -11,11 +13,17 @@ var createGameItems = function () {
         grunt[i] = game.add.sprite(enemyXPos[i], enemyYPos[i], 'grunt');
         enemyHealth[i] = game.add.sprite(enemyXPos[i], enemyYPos[i]+20, 'health');
         enemyGun[i] = game.add.sprite(enemyXPos[i]-13, enemyYPos[i]+20, 'pistol');
-        enemies[i] = new Enemy (grunt[i], enemyGun[i], enemyHealth[i], 7, 3, false, true, 0);
+        enemies[i] = new Enemy (grunt[i], enemyGun[i], enemyHealth[i], 7, 3, false, true, 0, true, enemyFarLeft[i], enemyFarRight[i]);
     }
 
     for (var i = 0; i < bulletXPos.length; i++) {
         bulletItems[i] = bulletPickUps.create(bulletXPos[i], bulletYPos[i], 'collectbullet');
+        bulletItems[i].animations.add('bounce', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], 30, true);
+    }
+
+    for (var i = 0; i < healthItemXPos.length; i++) {
+        healthItems[i] = healthPickUps.create(healthItemXPos[i], healthItemYPos[i], 'healthpickup'); 
+        healthItems[i].animations.add('bounce', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], 30, true);
     }
    
     for (var i = 0; i < enemies.length; i++) {
@@ -26,10 +34,6 @@ var createGameItems = function () {
         //  Our two animations, walking left and right.
         enemies[i].sprite.animations.add('goLeft', [4, 5, 6], 6, true);
         enemies[i].sprite.animations.add('goRight', [0, 1, 2], 6, true);
-    }
-
-    for (var i = 0; i < bulletItems.length; i++) {
-    	 bulletItems[i].animations.add('bounce', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], 30, true);
     }
 
     createPlayer();

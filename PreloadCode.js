@@ -11,4 +11,5 @@ var preloadSprites = function () {
     game.load.spritesheet('playerhealth', 'assets/hbar.png', 96, 20);
     game.load.spritesheet('bulletcount', 'assets/bulleticon.png', 100, 20);	
     game.load.spritesheet('collectbullet', 'assets/bulletitem.png', 10, 30);
+    game.load.spritesheet('healthpickup', 'assets/healthpickup.png', 20, 30);
 };

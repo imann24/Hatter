@@ -6,6 +6,7 @@ var addEnvironmentSprites = function() {
     platforms = game.add.group();
     bullets = game.add.group();
     bulletPickUps = game.add.group();
+    healthPickUps = game.add.group();
     // Here we create the ground.
     var ground = platforms.create(0, game.world.height - 64, 'ground');
  

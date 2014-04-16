@@ -1,6 +1,6 @@
 var enemyReloadCounter = 0;
 var enemies = [];
-var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingLeft, reloadCounter) {
+var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingLeft, reloadCounter, alive, farLeft, farRight) {
     this.sprite = sprite;
     this.gun = gun;
     this.healthSprite = healthSprite;
@@ -9,6 +9,9 @@ var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingL
     this.goingRight = goingRight; 
     this.goingLeft = goingLeft; 
     this.reloadCounter = reloadCounter;
+    this.alive = alive;
+    this.farLeft = farLeft;
+    this.farRight = farRight;
 };
 
 Enemy.prototype.enemyAmmoReplenish = function () {
@@ -51,6 +54,7 @@ Enemy.prototype.killEnemy = function () {
 	this.sprite.kill();
     this.healthSprite.kill();
     this.gun.kill();   
+    this.alive = false;
 };
 
 Enemy.prototype.facingPlayer = function(enemy) {
@@ -68,32 +72,34 @@ Enemy.prototype.checkEnemyDamage = function () {
 
 enemiesUpdate = function() {
 	for (var i = 0; i < enemies.length; i++) {
-        enemies[i].enemyHealthMatch();
-        game.physics.collide(enemies[i].sprite, platforms);
-        pistolMatch(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight);
-        if (enemies[i].goingRight === true) {
-           enemies[i].walkRight();
-        } 
-        if (enemies[i].sprite.x >= 700) {
-            enemies[i].goingLeft = true;
-            enemies[i].goingRight = false;
-        }
+        if (enemies[i].alive) {
+            enemies[i].enemyHealthMatch();
+            game.physics.collide(enemies[i].sprite, platforms);
+            pistolMatch(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight);
+            if (enemies[i].goingRight === true) {
+               enemies[i].walkRight();
+            } 
+            if (enemies[i].sprite.x >= enemies[i].farRight) {
+                enemies[i].goingLeft = true;
+                enemies[i].goingRight = false;
+            }
 
-        if(enemies[i].goingLeft === true) { 
-            enemies[i].walkLeft();
-        } 
-        if (enemies[i].sprite.x <= 100) {
-            enemies[i].goingRight = true;
-            enemies[i].goingLeft = false;
-        }
+            if(enemies[i].goingLeft === true) { 
+                enemies[i].walkLeft();
+            } 
+            if (enemies[i].sprite.x <= enemies[i].farLeft) {
+                enemies[i].goingRight = true;
+                enemies[i].goingLeft = false;
+            }
 
-        enemies[i].enemyAmmoReplenish();
-        // game.physics.overlap (enemies[i].sprite, bullets, enemies[i].damageEnemy, null, this);
-        if (enemies[i].health === 0) {
-             enemies[i].killEnemy();
-        }
-        if (enemies[i].facingPlayer(enemies[i])) {
-            pistolFire(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight, enemies[i].ammo);
+            enemies[i].enemyAmmoReplenish();
+            // game.physics.overlap (enemies[i].sprite, bullets, enemies[i].damageEnemy, null, this);
+            if (enemies[i].health === 0) {
+                 enemies[i].killEnemy();
+            }
+            if (enemies[i].facingPlayer(enemies[i])) {
+                pistolFire(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight, enemies[i].ammo);
+            }
         }
     }   
 };
