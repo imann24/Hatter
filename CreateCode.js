@@ -13,11 +13,11 @@ var createGameItems = function () {
         grunt[i] = game.add.sprite(enemyXPos[i], enemyYPos[i], 'grunt');
         enemyHealth[i] = game.add.sprite(enemyXPos[i], enemyYPos[i]+20, 'health');
         enemyGun[i] = game.add.sprite(enemyXPos[i]-13, enemyYPos[i]+20, 'pistol');
-        enemies[i] = new Enemy (grunt[i], enemyGun[i], enemyHealth[i], 7, 3, false, true, 0, true, enemyFarLeft[i], enemyFarRight[i]);
+        enemies[i] = new Enemy (grunt[i], enemyGun[i], enemyHealth[i], 7, 3, false, true, 0, true, enemyFarLeft[i], enemyFarRight[i], 15);
     }
 
     for (var i = 0; i < bulletXPos.length; i++) {
-        bulletItems[i] = bulletPickUps.create(bulletXPos[i], bulletYPos[i], 'collectbullet');
+    bulletItems[i] = bulletPickUps.create(bulletXPos[i], bulletYPos[i], 'collectbullet');
         bulletItems[i].animations.add('bounce', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], 30, true);
     }
 
@@ -39,8 +39,9 @@ var createGameItems = function () {
     createPlayer();
 
     fireKey = game.input.keyboard.addKey(Phaser.Keyboard.F);
-    respawnKey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+    weaponSwitchKey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
     testKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+    pickUpKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
     cursors = game.input.keyboard.createCursorKeys();
     pistolMatch(player, playerGun, playerLeft, playerRight);
 };

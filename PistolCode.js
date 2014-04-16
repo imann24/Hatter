@@ -1,17 +1,16 @@
 var left = false;
 var right = false;
 var firing = false;
-var firingRate = 15;
 var fireCounter = 0;
 var enemyHealthNum = 0;
 var bulletCounter = 0;
 var ammoCount = 8; 
-
+var playerGunX = 24;
 var bulletItems = [];
 var bulletXPos = [50, 400, 400, 600, 150, 600];
 var bulletYPos = [200, 500, 350, 350, 200, 500];
 
-var pistolFire = function (character, gun, left, right, ammo) {
+var pistolFire = function (character, gun, left, right, ammo, firingRate) {
    
    if (bulletCounter === 1 && ammo > 0) {
         firing = true;
@@ -63,7 +62,11 @@ var pistolMatch = function (character, gun, left, right) {
           gun.frame = 4;
         }
     }
+    if (character === player) {
+      gun.x = character.x - currentWeapon.x;
+    } else {
     gun.x = character.x - 24;
+    }  
     gun.y = character.y + 22;  
 };
 
@@ -73,7 +76,7 @@ var checkBulletPickUp = function () {
 
 var addBullets = function (player, bulletItem) {
   bulletItem.kill();
-  ammoCount = 8;
+  ammoCount = currentWeapon.clip;
 };
 
 var bounceBulletPickUps = function () {
@@ -81,3 +84,6 @@ var bounceBulletPickUps = function () {
       bulletItems[i].animations.play('bounce');
   }
 };
+
+var checkReadyToFire = function (){
+}

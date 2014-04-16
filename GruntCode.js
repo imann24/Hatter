@@ -1,6 +1,6 @@
 var enemyReloadCounter = 0;
 var enemies = [];
-var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingLeft, reloadCounter, alive, farLeft, farRight) {
+var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingLeft, reloadCounter, alive, farLeft, farRight, firingRate) {
     this.sprite = sprite;
     this.gun = gun;
     this.healthSprite = healthSprite;
@@ -12,6 +12,7 @@ var Enemy = function(sprite, gun, healthSprite, health, ammo, goingRight, goingL
     this.alive = alive;
     this.farLeft = farLeft;
     this.farRight = farRight;
+    this.firingRate = firingRate;
 };
 
 Enemy.prototype.enemyAmmoReplenish = function () {
@@ -98,7 +99,7 @@ enemiesUpdate = function() {
                  enemies[i].killEnemy();
             }
             if (enemies[i].facingPlayer(enemies[i])) {
-                pistolFire(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight, enemies[i].ammo);
+                pistolFire(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight, enemies[i].ammo, enemies[i].firingRate);
             }
         }
     }   

@@ -1,6 +1,7 @@
 var playerHealthNum = 9;
 var playerRight;
 var playerLeft;
+var currentWeapon; 
 
 var createPlayer = function () {
 	player = game.add.sprite(32, game.world.height - 120, 'hatter');
@@ -10,6 +11,7 @@ var createPlayer = function () {
     playerAmmo.frame = 8;
     game.add.sprite (8, guiY, 'redCross');
     playerGun = game.add.sprite(19, game.world.height - 100, 'pistol');
+    currentWeapon = weapons[0];
     player.body.bounce.y = 0;
     player.body.gravity.y = 10;
     player.body.collideWorldBounds = true;
@@ -18,7 +20,26 @@ var createPlayer = function () {
     player.animations.add('right', [0, 1, 2], 6, true);
 };
 
-
+var weapons = [
+	{	
+		name: 'pistol',
+		sprite: 'pistol',
+		x: 24,
+		ammo: 'bullets',
+		clip: 8,
+		icon: 'pistolicon',
+		fireRate: 20
+	},
+	{
+		name: 'smg',
+		sprite: 'smg',
+		x: 34,
+		ammo: 'bullets',
+		clip: 25,
+		icon: 'smgicon',
+		fireRate: 10
+	}
+];
 var playerHealthMatch = function () {
 	if (playerHealthNum > 0) {
 		playerHealth.frame = 9 - playerHealthNum; 
@@ -39,10 +60,11 @@ var killPlayer = function () {
 	playerGun.kill();
 };
 
-var respawnPlayer = function () {
-	playerGun = game.add.sprite(19, game.world.height - 100, 'pistol');
-	player = game.add.sprite(32, game.world.height - 120, 'hatter');
-	playerHealthNum = 9;
+var switchWeapon = function () {
+	playerGun.kill();
+	playerGun = game.add.sprite(19, game.world.height - 100, 'smg');
+	currentWeapon = weapons[1];
+	ammoCount = currentWeapon.clip;
 };
 
 var walkLeft = function () {

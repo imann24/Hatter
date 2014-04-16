@@ -2,7 +2,7 @@ var guiY = 10;
 var enemiesAlive = false;
 
 var updateBullets = function () {
-	if (ammoCount < 9 && ammoCount > -1) {
+	if (ammoCount < 28 && ammoCount > -1) {
 		playerAmmo.frame = ammoCount;
 	}
 };

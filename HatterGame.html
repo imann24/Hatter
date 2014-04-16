@@ -67,18 +67,18 @@ function update() {
  
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down) {
-        player.body.velocity.y = -500;  
+        player.body.velocity.y = -500;
     }
 
     if (cursors.down.isDown && player.body.touching.down === false) {
         player.body.velocity.y = 500;
     }
     if (fireKey.isDown) {
-        pistolFire(player, playerGun, playerLeft, playerRight, ammoCount);
+        pistolFire(player, playerGun, playerLeft, playerRight, ammoCount, currentWeapon.fireRate);
     }
 
-    if (respawnKey.isDown) {
-        respawnPlayer();
+    if (weaponSwitchKey.isDown) {
+        switchWeapon();
     }
 
     checkPlayerDamage();
@@ -89,8 +89,10 @@ function update() {
     if (playerHealthNum < 1) {
         killPlayer();
     }
-    checkBulletPickUp();  
-    checkHealthPickUp(); 
+    if (pickUpKey.isDown) {
+        checkBulletPickUp();  
+        checkHealthPickUp(); 
+    }
     updateBullets();
     checkForWin();
 }
