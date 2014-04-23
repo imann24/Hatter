@@ -22,7 +22,8 @@
 <script type="text/javascript">
 
 var enemyAlive = true;
-var enemy1;
+var enemiesActive = false;
+var gameKeysActive = false;
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
@@ -35,16 +36,35 @@ function create() {
 }
 
 function update() {
+    if (countUp() && menuKey.isDown && instructionCounter < instructions.length) {
+       changeInstructionText();
+    } else if (instructionCounter > 5){
+        keyPressItem1.content = '';
+        keyPressItem2.content = '';
+    }   
+
+    if (pauseKey.isDown) {
+        enemiesActive = false;
+        gameKeysActive = false;
+    } else if (resumeKey.isDown) {
+        enemiesActive = true;
+        gameKeysActive = true;
+        destroyGUI();
+    }
     bounceBulletPickUps();
     bounceHealthPickUps();
 
     for (var i = 0; i < enemies.length; i++) {
-       // game.physics.overlap (enemies[i].sprite, bullets, enemies[i].damageEnemy, null, this);
        enemies[i].checkEnemyDamage();
     }
     
     game.physics.collide(player, platforms); 
-    enemiesUpdate();
+    if (enemiesActive) {
+        enemiesActionUpdate();
+    } else {
+        pauseEnemies();
+    }
+    enemiesPhysicsUpdate();
 
     if (playerGun.frame === 5 && fireCounter < 2 && firing === true) {
         fireCounter++;
@@ -56,9 +76,9 @@ function update() {
    
     resetPlayerMovement();
 
-    if (cursors.left.isDown) {
+    if (gameKeysActive && cursors.left.isDown) {
         walkLeft();
-    } else if (cursors.right.isDown) {
+    } else if (gameKeysActive && cursors.right.isDown) {
         walkRight();
         
     } else {
@@ -66,21 +86,24 @@ function update() {
     }
  
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down) {
+    if (gameKeysActive && cursors.up.isDown && player.body.touching.down) {
         player.body.velocity.y = -500;
     }
 
-    if (cursors.down.isDown && player.body.touching.down === false) {
+    if (gameKeysActive && cursors.down.isDown && player.body.touching.down === false) {
         player.body.velocity.y = 500;
     }
-    if (fireKey.isDown) {
+    if (gameKeysActive && fireKey.isDown) {
         pistolFire(player, playerGun, playerLeft, playerRight, ammoCount, currentWeapon.fireRate);
     }
-
-    if (weaponSwitchKey.isDown) {
-        switchWeapon();
+    if (switchCounter > 10) {
+        switchCounter = 0;
     }
-
+    while (gameKeysActive && weaponSwitchKey.isDown && switchCounter === 0) {
+        switchWeapon();
+        switchCounter++;
+    }
+    switchCounter++;
     checkPlayerDamage();
     playerHealthMatch();
     
@@ -96,6 +119,7 @@ function update() {
     updateBullets();
     checkForWin();
 }
+
 </script>
 </body>
 </html>

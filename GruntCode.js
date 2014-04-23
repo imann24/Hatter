@@ -71,11 +71,10 @@ Enemy.prototype.checkEnemyDamage = function () {
 	game.physics.overlap (this.sprite, bullets, this.damageEnemy, null, this);
 };
 
-enemiesUpdate = function() {
+var enemiesActionUpdate = function() {
 	for (var i = 0; i < enemies.length; i++) {
         if (enemies[i].alive) {
             enemies[i].enemyHealthMatch();
-            game.physics.collide(enemies[i].sprite, platforms);
             pistolMatch(enemies[i].sprite, enemies[i].gun, enemies[i].goingLeft, enemies[i].goingRight);
             if (enemies[i].goingRight === true) {
                enemies[i].walkRight();
@@ -94,7 +93,7 @@ enemiesUpdate = function() {
             }
 
             enemies[i].enemyAmmoReplenish();
-            // game.physics.overlap (enemies[i].sprite, bullets, enemies[i].damageEnemy, null, this);
+        
             if (enemies[i].health === 0) {
                  enemies[i].killEnemy();
             }
@@ -103,4 +102,16 @@ enemiesUpdate = function() {
             }
         }
     }   
+};
+var enemiesPhysicsUpdate = function () {
+    for (var i = 0; i < enemies.length; i++) {
+        game.physics.collide(enemies[i].sprite, platforms);
+    }
+};
+
+var pauseEnemies = function () {
+    for (var i = 0; i < enemies.length; i++) {
+        enemies[i].sprite.body.velocity.x = 0;
+        enemies[i].sprite.frame = 3;
+    } 
 };

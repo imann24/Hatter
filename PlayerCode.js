@@ -2,12 +2,38 @@ var playerHealthNum = 9;
 var playerRight;
 var playerLeft;
 var currentWeapon; 
+var pistolActive = true;
+var smgActive = true;
+var switchCounter = 0;
+var weapons = [
+	{	
+		name: 'pistol',
+		sprite: 'pistol',
+		x: 24,
+		ammo: 'bullets',
+		clip: 8,
+		icon: 'pistolIcon',
+		fireRate: 20,
+		ammoMod: 1/3
+	},
+	{
+		name: 'smg',
+		sprite: 'smg',
+		x: 34,
+		ammo: 'bullets',
+		clip: 24,
+		icon: 'smgIcon',
+		fireRate: 10,
+		ammoMod: 3
+	}
+];
 
 var createPlayer = function () {
+	currentWeapon = weapons[0];
 	player = game.add.sprite(32, game.world.height - 120, 'hatter');
     playerHealth = game.add.sprite(30, guiY, 'playerhealth');
-    game.add.sprite(8, guiY + 30, 'gunIcon');
-    playerAmmo = game.add.sprite(30, guiY + 30, 'bulletcount');
+    weaponIcon = game.add.sprite(8, guiY + 30, currentWeapon.icon);
+    playerAmmo = game.add.sprite(38, guiY + 30, 'bulletcount');
     playerAmmo.frame = 8;
     game.add.sprite (8, guiY, 'redCross');
     playerGun = game.add.sprite(19, game.world.height - 100, 'pistol');
@@ -20,26 +46,7 @@ var createPlayer = function () {
     player.animations.add('right', [0, 1, 2], 6, true);
 };
 
-var weapons = [
-	{	
-		name: 'pistol',
-		sprite: 'pistol',
-		x: 24,
-		ammo: 'bullets',
-		clip: 8,
-		icon: 'pistolicon',
-		fireRate: 20
-	},
-	{
-		name: 'smg',
-		sprite: 'smg',
-		x: 34,
-		ammo: 'bullets',
-		clip: 25,
-		icon: 'smgicon',
-		fireRate: 10
-	}
-];
+
 var playerHealthMatch = function () {
 	if (playerHealthNum > 0) {
 		playerHealth.frame = 9 - playerHealthNum; 
@@ -60,11 +67,27 @@ var killPlayer = function () {
 	playerGun.kill();
 };
 
-var switchWeapon = function () {
+var switchWeapon = function () {	
+	var ammoScaler = ammoCount; 
 	playerGun.kill();
-	playerGun = game.add.sprite(19, game.world.height - 100, 'smg');
-	currentWeapon = weapons[1];
-	ammoCount = currentWeapon.clip;
+	weaponIcon.kill();
+
+	if (pistolActive) {
+		playerGun = game.add.sprite(19, game.world.height - 100, 'smg');
+		currentWeapon = weapons[1];
+		ammoCount = Math.round(ammoScaler *= currentWeapon.ammoMod);
+		pistolActive = false;
+		smgActive = true;
+	} else {
+		playerGun = game.add.sprite(19, game.world.height - 100, 'pistol');
+		currentWeapon = weapons[0];
+		ammoCount = Math.round(ammoScaler *= currentWeapon.ammoMod);
+		pistolActive = true;
+		smgActive = false;
+	}
+	weaponIcon = game.add.sprite(8, guiY + 30, currentWeapon.icon);
+
+
 };
 
 var walkLeft = function () {

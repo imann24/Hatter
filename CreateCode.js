@@ -6,7 +6,7 @@ var createGameItems = function () {
     var enemyGun = [];
     var grunt = [];
     var enemyHealth = [];
- 
+    
     addEnvironmentSprites();
     
     for (var i = 0; i < enemyYPos.length; i++) {
@@ -30,6 +30,7 @@ var createGameItems = function () {
         enemies[i].sprite.body.bounce.y = 0;
         enemies[i].sprite.body.gravity.y = 10;
         enemies[i].sprite.body.collideWorldBounds = true;
+        enemies[i].enemyHealthMatch();
      
         //  Our two animations, walking left and right.
         enemies[i].sprite.animations.add('goLeft', [4, 5, 6], 6, true);
@@ -42,6 +43,10 @@ var createGameItems = function () {
     weaponSwitchKey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
     testKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
     pickUpKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+    resumeKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
+    menuKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
     cursors = game.input.keyboard.createCursorKeys();
     pistolMatch(player, playerGun, playerLeft, playerRight);
+    addInstructionText();
 };

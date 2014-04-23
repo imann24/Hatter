@@ -2,7 +2,8 @@ var preloadSprites = function () {
 	game.load.image('sky', 'assets/sky.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('redCross', 'assets/health.png');
-    game.load.image('gunIcon', 'assets/pistolicon.png');
+    game.load.image('pistolIcon', 'assets/pistolicon.png');
+    game.load.image('smgIcon', 'assets/smgicon.png');
     game.load.spritesheet('bullet', 'assets/bullet.png', 10, 3);
     game.load.spritesheet('pistol', 'assets/pistol.png', 80, 16)
     game.load.spritesheet('smg', 'assets/smg.png', 100, 16);
