@@ -4,6 +4,10 @@ var firing = false;
 var fireCounter = 0;
 var enemyHealthNum = 0;
 var bulletCounter = 0;
+var buttonCounter = 0;
+var buttonCounter2 = 0;
+var buttonCounter3 = 0;
+var buttonCounter4 = 0;
 var ammoCount = 8; 
 var playerGunX = 24;
 var bulletItems = [];
@@ -11,8 +15,8 @@ var bulletXPos = [50, 400, 400, 600, 150, 600];
 var bulletYPos = [200, 500, 350, 350, 200, 500];
 
 var pistolFire = function (character, gun, left, right, ammo, firingRate) {
-   
-   if (bulletCounter === 1 && ammo > 0) {
+   //bulletCounter === 1%%
+   if (ammo > 0) {
         firing = true;
         if (right) {
           gun.frame = 1; 
@@ -45,10 +49,6 @@ var pistolFire = function (character, gun, left, right, ammo, firingRate) {
             }
           }
         }
-    }
-    bulletCounter++;
-    if (bulletCounter > firingRate){
-        bulletCounter = 0;
     }
 };
 
@@ -85,5 +85,63 @@ var bounceBulletPickUps = function () {
   }
 };
 
-var checkReadyToFire = function (){
-}
+
+var checkButton = function (button, buttonDelay){
+  if (button.isDown) {
+    buttonCounter++
+      if (buttonCounter >= buttonDelay) {
+        buttonCounter = 0;
+        return true;
+      } else {
+        return false;
+      }
+  } else {
+    buttonCounter = buttonDelay; 
+    return true;
+  }
+};
+
+var checkButton2 = function (button, buttonDelay){
+  if (button.isDown) {
+    button2Counter++
+      if (button2Counter >= buttonDelay) {
+        button2Counter = 0;
+        return true;
+      } else {
+        return false;
+      }
+  } else {
+    button2Counter = buttonDelay; 
+    return true;
+  }
+};
+
+var checkButton3 = function (button, buttonDelay){
+  if (button.isDown) {
+    button3Counter++
+      if (button3Counter >= buttonDelay) {
+        button3Counter = 0;
+        return true;
+      } else {
+        return false;
+      }
+  } else {
+    button3Counter = buttonDelay; 
+    return true;
+  }
+};
+
+var checkButton4 = function (button, buttonDelay){
+  if (button.isDown) {
+    button4Counter++
+      if (button4Counter >= buttonDelay) {
+        button4Counter = 0;
+        return true;
+      } else {
+        return false;
+      }
+  } else {
+    button4Counter = buttonDelay; 
+    return true;
+  }
+};

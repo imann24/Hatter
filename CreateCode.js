@@ -46,6 +46,8 @@ var createGameItems = function () {
     pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
     resumeKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
     menuKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    menuBackKey = game.input.keyboard.addKey(Phaser.Keyboard.N);
+    respawnKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
     cursors = game.input.keyboard.createCursorKeys();
     pistolMatch(player, playerGun, playerLeft, playerRight);
     addInstructionText();

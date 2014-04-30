@@ -14,7 +14,8 @@ var weapons = [
 		clip: 8,
 		icon: 'pistolIcon',
 		fireRate: 20,
-		ammoMod: 1/3
+		ammoMod: 1/3,
+		fireRate: 12
 	},
 	{
 		name: 'smg',
@@ -24,7 +25,8 @@ var weapons = [
 		clip: 24,
 		icon: 'smgIcon',
 		fireRate: 10,
-		ammoMod: 3
+		ammoMod: 3,
+		fireRate: 7
 	}
 ];
 
@@ -65,6 +67,8 @@ var checkPlayerDamage = function () {
 var killPlayer = function () {
 	player.kill();
 	playerGun.kill();
+	gameKeysActive = false;
+	addDefeatText();
 };
 
 var switchWeapon = function () {	
